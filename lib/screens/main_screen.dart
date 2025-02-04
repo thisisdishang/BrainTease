@@ -1,4 +1,6 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'home_screen.dart';
 import 'history_screen.dart';
 
@@ -14,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
 
   static final List<Widget> _screens = [
     HomeScreen(),
-    const HistoryScreen(),
+    HistoryScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -23,19 +25,72 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void _showBackDialog() {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Exit App'),
+          content: const Text(
+            'Are you sure you want to exit the app?',
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Yes'),
+              onPressed: () {
+                SystemNavigator.pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.deepPurpleAccent.shade400,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.white,
-        onTap: _onItemTapped,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) {
+        if (didPop) {
+          return;
+        }
+        _showBackDialog();
+      },
+      child: Scaffold(
+        extendBody: true,
+        body: _screens[_selectedIndex],
+        bottomNavigationBar: CurvedNavigationBar(
+          index: _selectedIndex,
+          backgroundColor: Colors.transparent,
+          color: Colors.blue.shade900,
+          animationDuration: Duration(milliseconds: 300),
+          onTap: (value) {
+            _onItemTapped(value);
+          },
+          items: [
+            Icon(
+              Icons.home,
+              color: Colors.white,
+            ),
+            Icon(
+              Icons.history,
+              color: Colors.white,
+            ),
+          ],
+        ),
       ),
     );
   }

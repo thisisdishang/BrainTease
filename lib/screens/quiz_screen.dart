@@ -25,6 +25,23 @@ class _QuizScreenState extends State<QuizScreen> {
   String? _selectedAnswer;
   final List<Map<String, String>> _quizQuestions = [];
 
+  // Mapping category ID to category name
+  static const Map<int, String> categoryMap = {
+    9: "General Knowledge",
+    10: "Books",
+    11: "Film",
+    12: "Music",
+    15: "Video Games",
+    18: "Computers",
+    19: "Mathematics",
+    21: "Sports",
+    23: "History",
+    26: "Celebrity",
+    27: "Animals",
+    28: "Vehicles",
+    30: "Gadgets",
+  };
+
   @override
   void initState() {
     super.initState();
@@ -57,8 +74,7 @@ class _QuizScreenState extends State<QuizScreen> {
         });
       } else {
         // Store Quiz History after completion
-        Provider.of<QuizHistoryProvider>(context, listen: false)
-            .addQuizToHistory(
+        Provider.of<QuizHistoryProvider>(context, listen: false).addHistory(
           QuizHistoryModel(
             category: widget.categoryId.toString(),
             difficulty: widget.difficulty,
@@ -79,71 +95,118 @@ class _QuizScreenState extends State<QuizScreen> {
     });
   }
 
+  void _showBackDialog() {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Are you sure?'),
+          content: const Text(
+            'Are you sure you don\'t want to play this quiz?',
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurpleAccent.shade400,
-        title: Text(
-          "Quiz - ${widget.difficulty[0].toUpperCase() + widget.difficulty.substring(1)}",
-          style: TextStyle(color: Colors.white),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) {
+        if (didPop) {
+          return;
+        }
+        _showBackDialog();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.blue.shade900,
+          title: Text(
+            "${categoryMap[widget.categoryId] ?? "Unknown Category"} - ${widget.difficulty[0].toUpperCase() + widget.difficulty.substring(1)}",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
-      ),
-      body: FutureBuilder<List<QuestionModel>>(
-        future: _quizFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError ||
-              !snapshot.hasData ||
-              snapshot.data!.isEmpty) {
-            return const Center(child: Text("Failed to load questions."));
-          }
+        body: FutureBuilder<List<QuestionModel>>(
+          future: _quizFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError ||
+                !snapshot.hasData ||
+                snapshot.data!.isEmpty) {
+              return const Center(child: Text("Failed to load questions."));
+            }
 
-          QuestionModel question = snapshot.data![_currentIndex];
+            QuestionModel question = snapshot.data![_currentIndex];
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Question ${_currentIndex + 1}/10",
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-                Text(question.question,
-                    style: const TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center),
-                const SizedBox(height: 20),
-                ...question.options.map((option) => GestureDetector(
-                      onTap: () => _checkAnswer(
-                          option, question.correctAnswer, snapshot),
-                      child: Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.symmetric(vertical: 5),
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: _answered
-                              ? (option == question.correctAnswer
-                                  ? Colors.green
-                                  : (option == _selectedAnswer
-                                      ? Colors.red
-                                      : Colors.grey[300]))
-                              : Colors.blue[100],
-                          borderRadius: BorderRadius.circular(10),
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Question ${_currentIndex + 1}/10",
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(question.question,
+                      style: const TextStyle(fontSize: 18),
+                      textAlign: TextAlign.center),
+                  const SizedBox(height: 20),
+                  ...question.options.map((option) => GestureDetector(
+                        onTap: () => _checkAnswer(
+                            option, question.correctAnswer, snapshot),
+                        child: Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(vertical: 5),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: _answered
+                                ? (option == question.correctAnswer
+                                    ? Colors.green
+                                    : (option == _selectedAnswer
+                                        ? Colors.red
+                                        : Colors.grey[300]))
+                                : Colors.blue[100],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(option,
+                              style: const TextStyle(fontSize: 16),
+                              textAlign: TextAlign.center),
                         ),
-                        child: Text(option,
-                            style: const TextStyle(fontSize: 16),
-                            textAlign: TextAlign.center),
-                      ),
-                    )),
-              ],
-            ),
-          );
-        },
+                      )),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -22,23 +22,45 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurpleAccent.shade400,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(70.0),
-                child: Image.asset('assets/images/logo.png'),
+      backgroundColor: Colors.blue.shade900,
+      body: Stack(
+        children: [
+          // Centered Logo and Loading Indicator
+          Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(70.0),
+                    child: Image.asset('assets/images/logo.png'),
+                  ),
+                  const SizedBox(height: 20),
+                  const CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              const CircularProgressIndicator(
-                color: Colors.white,
-              ),
-            ],
+            ),
           ),
-        ),
+
+          // Positioned "Powered By" text at the absolute bottom
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
+                "Powered By Rana Corporation®",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.8),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

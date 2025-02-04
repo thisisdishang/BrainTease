@@ -12,6 +12,9 @@ class ResultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white, 
+        ),
         backgroundColor: Colors.deepPurpleAccent.shade400,
         title: const Text(
           "Quiz Result",

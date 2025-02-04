@@ -63,7 +63,7 @@ class HomeScreen extends StatelessWidget {
       "id": 26,
       "name": "Celebrity",
       "image":
-          "https://png.pngtree.com/png-vector/20230728/ourlarge/pngtree-fame-clipart-celebrity-cartoon-characters-with-camera-and-microphone-vector-png-image_6807211.png"
+          "https://thumbs.dreamstime.com/b/elegant-young-beautiful-woman-female-celebrity-movie-star-superstar-posing-front-photographers-red-carpet-ceremony-143610506.jpg"
     },
     {
       "id": 27,
@@ -120,7 +120,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurpleAccent.shade400,
+        backgroundColor: Colors.blue.shade900,
         title: Center(
           child: const Text(
             'Quiz Categories',

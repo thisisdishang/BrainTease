@@ -30,7 +30,7 @@ class HistoryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurpleAccent.shade400,
+        backgroundColor: Colors.blue.shade900,
         title: const Center(
           child: Text(
             "Quiz History",
