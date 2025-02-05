@@ -18,12 +18,14 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  late Future<List<QuestionModel>> _quizFuture;
+  List<QuestionModel> _quizQuestions = [];
   int _currentIndex = 0;
   int _score = 0;
   bool _answered = false;
   String? _selectedAnswer;
-  final List<Map<String, String>> _quizQuestions = [];
+  bool _isLoading = true;
+  bool _hasError = false;
+  final PageController _pageController = PageController();
 
   // Mapping category ID to category name
   static const Map<int, String> categoryMap = {
@@ -45,11 +47,25 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
-    _quizFuture =
-        ApiService().fetchQuestions(widget.categoryId, widget.difficulty);
+    _fetchQuestions();
   }
 
-  void _checkAnswer(String answer, String correctAnswer, dynamic snapshot) {
+  Future<void> _fetchQuestions() async {
+    try {
+      _quizQuestions = await ApiService().fetchQuestions(widget.categoryId, widget.difficulty);
+      if (_quizQuestions.isEmpty) {
+        _hasError = true;
+      }
+    } catch (e) {
+      _hasError = true;
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _checkAnswer(String answer, String correctAnswer) {
     if (_answered) return;
 
     setState(() {
@@ -59,11 +75,7 @@ class _QuizScreenState extends State<QuizScreen> {
     });
 
     // Save question and answer to history
-    _quizQuestions.add({
-      "question": snapshot.data![_currentIndex].question, // FIXED
-      "selectedAnswer": answer,
-      "correctAnswer": correctAnswer,
-    });
+    _quizQuestions[_currentIndex].selectedAnswer = answer;
 
     Future.delayed(const Duration(seconds: 2), () {
       if (_currentIndex < 9) {
@@ -72,6 +84,10 @@ class _QuizScreenState extends State<QuizScreen> {
           _answered = false;
           _selectedAnswer = null;
         });
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.fastEaseInToSlowEaseOut,
+        );
       } else {
         // Store Quiz History after completion
         Provider.of<QuizHistoryProvider>(context, listen: false).addHistory(
@@ -80,7 +96,12 @@ class _QuizScreenState extends State<QuizScreen> {
             difficulty: widget.difficulty,
             score: _score,
             totalQuestions: 10,
-            questions: _quizQuestions,
+            questions: _quizQuestions.map((q) => {
+              'question': q.question,
+              'correctAnswer': q.correctAnswer,
+              'selectedAnswer': q.selectedAnswer ?? '',
+              'options': q.options.join(','),
+            }).toList(),
           ),
         );
 
@@ -151,62 +172,59 @@ class _QuizScreenState extends State<QuizScreen> {
             style: TextStyle(color: Colors.white),
           ),
         ),
-        body: FutureBuilder<List<QuestionModel>>(
-          future: _quizFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError ||
-                !snapshot.hasData ||
-                snapshot.data!.isEmpty) {
-              return const Center(child: Text("Failed to load questions."));
-            }
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _hasError
+                ? const Center(child: Text("Failed to load questions."))
+                : PageView.builder(
+                    controller: _pageController,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      QuestionModel question = _quizQuestions[index];
 
-            QuestionModel question = snapshot.data![_currentIndex];
-
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Question ${_currentIndex + 1}/10",
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(question.question,
-                      style: const TextStyle(fontSize: 18),
-                      textAlign: TextAlign.center),
-                  const SizedBox(height: 20),
-                  ...question.options.map((option) => GestureDetector(
-                        onTap: () => _checkAnswer(
-                            option, question.correctAnswer, snapshot),
-                        child: Container(
-                          width: double.infinity,
-                          margin: const EdgeInsets.symmetric(vertical: 5),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: _answered
-                                ? (option == question.correctAnswer
-                                    ? Colors.green
-                                    : (option == _selectedAnswer
-                                        ? Colors.red
-                                        : Colors.grey[300]))
-                                : Colors.blue[100],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(option,
-                              style: const TextStyle(fontSize: 16),
-                              textAlign: TextAlign.center),
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Question ${index + 1}/10",
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(question.question,
+                                style: const TextStyle(fontSize: 18),
+                                textAlign: TextAlign.center),
+                            const SizedBox(height: 20),
+                            ...question.options.map((option) => GestureDetector(
+                                  onTap: () => _checkAnswer(
+                                      option, question.correctAnswer),
+                                  child: Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.symmetric(vertical: 5),
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: _answered
+                                          ? (option == question.correctAnswer
+                                              ? Colors.green
+                                              : (option == _selectedAnswer
+                                                  ? Colors.red
+                                                  : Colors.grey[300]))
+                                          : Colors.blue[100],
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(option,
+                                        style: const TextStyle(fontSize: 16),
+                                        textAlign: TextAlign.center),
+                                  ),
+                                )),
+                          ],
                         ),
-                      )),
-                ],
-              ),
-            );
-          },
-        ),
+                      );
+                    },
+                  ),
       ),
     );
   }

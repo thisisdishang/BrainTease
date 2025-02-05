@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'quiz_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+  final bool showBackButton;
+
+  HomeScreen({super.key, this.showBackButton = true});
 
   final List<Map<String, dynamic>> categories = [
     {
@@ -100,12 +101,10 @@ class HomeScreen extends StatelessWidget {
                     Text(difficulty[0].toUpperCase() + difficulty.substring(1)),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.push(
+                  Navigator.pushNamed(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => QuizScreen(
-                          categoryId: categoryId, difficulty: difficulty),
-                    ),
+                    '/quiz',
+                    arguments: {'categoryId': categoryId, 'difficulty': difficulty},
                   );
                 },
               );
@@ -120,6 +119,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: showBackButton,
         backgroundColor: Colors.blue.shade900,
         title: Center(
           child: const Text(

@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 class QuizHistoryModel {
+  final int? id;
   final String category;
   final String difficulty;
-  final int score;
-  final int totalQuestions;
-  final List<Map<String, String>> questions; // Storing questions
+  int score;
+  int totalQuestions; // Make totalQuestions mutable
+  final List<Map<String, String>> questions;
 
   QuizHistoryModel({
+    this.id,
     required this.category,
     required this.difficulty,
     required this.score,
@@ -13,21 +17,25 @@ class QuizHistoryModel {
     required this.questions,
   });
 
-  Map<String, dynamic> toJson() => {
-        'category': category,
-        'difficulty': difficulty,
-        'score': score,
-        'totalQuestions': totalQuestions,
-        'questions': questions,
-      };
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'category': category,
+      'difficulty': difficulty,
+      'score': score,
+      'totalQuestions': totalQuestions,
+      'questions': jsonEncode(questions),
+    };
+  }
 
   factory QuizHistoryModel.fromJson(Map<String, dynamic> json) {
     return QuizHistoryModel(
+      id: json['id'],
       category: json['category'],
       difficulty: json['difficulty'],
       score: json['score'],
       totalQuestions: json['totalQuestions'],
-      questions: List<Map<String, String>>.from(json['questions']),
+      questions: List<Map<String, String>>.from(jsonDecode(json['questions']).map((item) => Map<String, String>.from(item))),
     );
   }
 }

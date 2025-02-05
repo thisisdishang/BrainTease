@@ -4,7 +4,9 @@ import '../providers/quiz_history_provider.dart';
 import '../models/quiz_history_model.dart';
 
 class HistoryScreen extends StatelessWidget {
-  const HistoryScreen({super.key});
+  final bool showBackButton;
+
+  const HistoryScreen({super.key, this.showBackButton = true});
 
   // Mapping category ID to category name
   static const Map<int, String> categoryMap = {
@@ -30,6 +32,7 @@ class HistoryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: showBackButton,
         backgroundColor: Colors.blue.shade900,
         title: const Center(
           child: Text(

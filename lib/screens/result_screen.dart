@@ -1,4 +1,3 @@
-import 'package:braintease/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 
 class ResultScreen extends StatelessWidget {
@@ -13,9 +12,9 @@ class ResultScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
-          color: Colors.white, 
+          color: Colors.white,
         ),
-        backgroundColor: Colors.deepPurpleAccent.shade400,
+        backgroundColor: Colors.blue.shade900,
         title: const Text(
           "Quiz Result",
           style: TextStyle(color: Colors.white),
@@ -32,11 +31,8 @@ class ResultScreen extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => MainScreen()),
-                  (route) => false,
-                );
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/main', (route) => false);
               },
               child: const Text("Back to Home"),
             ),
