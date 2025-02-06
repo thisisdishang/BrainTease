@@ -109,7 +109,11 @@ class _QuizScreenState extends State<QuizScreen> {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                ResultScreen(score: _score, totalQuestions: 10),
+                ResultScreen(score: _score, totalQuestions: 10, questions: _quizQuestions.map((q) => {
+                  'question': q.question,
+                  'correctAnswer': q.correctAnswer,
+                  'selectedAnswer': q.selectedAnswer ?? '',
+                }).toList()),
           ),
         );
       }
@@ -172,59 +176,108 @@ class _QuizScreenState extends State<QuizScreen> {
             style: TextStyle(color: Colors.white),
           ),
         ),
-        body: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : _hasError
-                ? const Center(child: Text("Failed to load questions."))
-                : PageView.builder(
-                    controller: _pageController,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      QuestionModel question = _quizQuestions[index];
-
-                      return Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Question ${index + 1}/10",
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 20),
-                            Text(question.question,
-                                style: const TextStyle(fontSize: 18),
-                                textAlign: TextAlign.center),
-                            const SizedBox(height: 20),
-                            ...question.options.map((option) => GestureDetector(
-                                  onTap: () => _checkAnswer(
-                                      option, question.correctAnswer),
-                                  child: Container(
-                                    width: double.infinity,
-                                    margin: const EdgeInsets.symmetric(vertical: 5),
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: _answered
-                                          ? (option == question.correctAnswer
-                                              ? Colors.green
-                                              : (option == _selectedAnswer
-                                                  ? Colors.red
-                                                  : Colors.grey[300]))
-                                          : Colors.blue[100],
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Text(option,
-                                        style: const TextStyle(fontSize: 16),
-                                        textAlign: TextAlign.center),
-                                  ),
-                                )),
-                          ],
-                        ),
-                      );
-                    },
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    value: (_currentIndex + 1) / 10,
+                    backgroundColor: Colors.grey[300],
+                    color: Colors.blue.shade900,
                   ),
+                  Text(
+                    "${_currentIndex + 1}/10",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue.shade900,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _hasError
+                      ? const Center(child: Text("Failed to load questions."))
+                      : PageView.builder(
+                          controller: _pageController,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            QuestionModel question = _quizQuestions[index];
+
+                            return Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Question ${index + 1}/10",
+                                    style: const TextStyle(
+                                        fontSize: 20, fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Text(question.question,
+                                      style: const TextStyle(fontSize: 18),
+                                      textAlign: TextAlign.center),
+                                  const SizedBox(height: 20),
+                                  GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      crossAxisSpacing: 10,
+                                      mainAxisSpacing: 10,
+                                      childAspectRatio: 5, // Adjusted aspect ratio
+                                    ),
+                                    itemCount: question.options.length,
+                                    itemBuilder: (context, optionIndex) {
+                                      final option = question.options[optionIndex];
+                                      return GestureDetector(
+                                        onTap: () => _checkAnswer(option, question.correctAnswer),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: _answered
+                                                ? (option == question.correctAnswer
+                                                    ? Colors.green
+                                                    : (option == _selectedAnswer
+                                                        ? Colors.red
+                                                        : Colors.grey[300]))
+                                                : Colors.blue[100],
+                                            borderRadius: BorderRadius.circular(10),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(0.2),
+                                                blurRadius: 5,
+                                                spreadRadius: 2,
+                                              ),
+                                            ],
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              option,
+                                              style: const TextStyle(fontSize: 14), // Adjusted font size
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+            ),
+          ],
+        ),
       ),
     );
   }

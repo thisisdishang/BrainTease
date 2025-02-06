@@ -104,7 +104,10 @@ class HomeScreen extends StatelessWidget {
                   Navigator.pushNamed(
                     context,
                     '/quiz',
-                    arguments: {'categoryId': categoryId, 'difficulty': difficulty},
+                    arguments: {
+                      'categoryId': categoryId,
+                      'difficulty': difficulty
+                    },
                   );
                 },
               );
@@ -128,44 +131,64 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(10),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(10).copyWith(bottom: 80),
         itemCount: categories.length,
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () => _showDifficultyDialog(
                 context, categories[index]["name"], categories[index]["id"]),
             child: Container(
+              height: 100,
+              margin: const EdgeInsets.only(bottom: 10),
               decoration: BoxDecoration(
                 border: Border.all(width: 1),
-                image: DecorationImage(
-                  image: NetworkImage(categories[index]["image"]!),
-                  fit: BoxFit.cover,
-                ),
                 borderRadius: BorderRadius.circular(10),
               ),
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    categories[index]["name"]!,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
+              child: Row(
+                children: [
+                  Container(
+                    width: 240,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(categories[index]["image"]!),
+                        fit: BoxFit.fitWidth,
+                      ),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10),
+                      ),
                     ),
                   ),
-                ),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.6),
+                            blurRadius: 5,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                        color: Colors.blue.shade700.withOpacity(0.8),
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          categories[index]["name"]!,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );

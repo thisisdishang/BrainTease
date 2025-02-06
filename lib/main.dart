@@ -38,6 +38,8 @@ class QuizApp extends StatelessWidget {
                   (ModalRoute.of(context)!.settings.arguments as Map)['score'],
               totalQuestions: (ModalRoute.of(context)!.settings.arguments
                   as Map)['totalQuestions'],
+              questions: (ModalRoute.of(context)!.settings.arguments
+                  as Map)['questions'], // Provide questions parameter
             ),
       },
     );
