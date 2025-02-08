@@ -139,56 +139,43 @@ class HomeScreen extends StatelessWidget {
             onTap: () => _showDifficultyDialog(
                 context, categories[index]["name"], categories[index]["id"]),
             child: Container(
-              height: 100,
+              height: 180,
               margin: const EdgeInsets.only(bottom: 10),
               decoration: BoxDecoration(
                 border: Border.all(width: 1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 240,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(categories[index]["image"]!),
-                        fit: BoxFit.fitWidth,
-                      ),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10),
-                      ),
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(categories[index]["image"]!),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    bottomLeft: Radius.circular(10),
+                  ),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.4),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      bottomLeft: Radius.circular(10),
                     ),
                   ),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.6),
-                            blurRadius: 5,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                        color: Colors.blue.shade700.withOpacity(0.8),
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
-                        ),
+                  child: Center(
+                    child: Text(
+                      categories[index]["name"]!,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
-                      child: Center(
-                        child: Text(
-                          categories[index]["name"]!,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           );

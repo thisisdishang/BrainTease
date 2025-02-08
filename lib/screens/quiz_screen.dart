@@ -52,7 +52,8 @@ class _QuizScreenState extends State<QuizScreen> {
 
   Future<void> _fetchQuestions() async {
     try {
-      _quizQuestions = await ApiService().fetchQuestions(widget.categoryId, widget.difficulty);
+      _quizQuestions = await ApiService()
+          .fetchQuestions(widget.categoryId, widget.difficulty);
       if (_quizQuestions.isEmpty) {
         _hasError = true;
       }
@@ -96,24 +97,30 @@ class _QuizScreenState extends State<QuizScreen> {
             difficulty: widget.difficulty,
             score: _score,
             totalQuestions: 10,
-            questions: _quizQuestions.map((q) => {
-              'question': q.question,
-              'correctAnswer': q.correctAnswer,
-              'selectedAnswer': q.selectedAnswer ?? '',
-              'options': q.options.join(','),
-            }).toList(),
+            questions: _quizQuestions
+                .map((q) => {
+                      'question': q.question,
+                      'correctAnswer': q.correctAnswer,
+                      'selectedAnswer': q.selectedAnswer ?? '',
+                      'options': q.options.join(','),
+                    })
+                .toList(),
           ),
         );
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                ResultScreen(score: _score, totalQuestions: 10, questions: _quizQuestions.map((q) => {
-                  'question': q.question,
-                  'correctAnswer': q.correctAnswer,
-                  'selectedAnswer': q.selectedAnswer ?? '',
-                }).toList()),
+            builder: (context) => ResultScreen(
+                score: _score,
+                totalQuestions: 10,
+                questions: _quizQuestions
+                    .map((q) => {
+                          'question': q.question,
+                          'correctAnswer': q.correctAnswer,
+                          'selectedAnswer': q.selectedAnswer ?? '',
+                        })
+                    .toList()),
           ),
         );
       }
@@ -183,20 +190,23 @@ class _QuizScreenState extends State<QuizScreen> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  CircularProgressIndicator(
+                  LinearProgressIndicator(
                     value: (_currentIndex + 1) / 10,
                     backgroundColor: Colors.grey[300],
                     color: Colors.blue.shade900,
                   ),
-                  Text(
-                    "${_currentIndex + 1}/10",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue.shade900,
-                    ),
-                  ),
                 ],
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                "Question ${_currentIndex + 1}/10",
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
             Expanded(
@@ -216,12 +226,6 @@ class _QuizScreenState extends State<QuizScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    "Question ${index + 1}/10",
-                                    style: const TextStyle(
-                                        fontSize: 20, fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(height: 20),
                                   Text(question.question,
                                       style: const TextStyle(fontSize: 18),
                                       textAlign: TextAlign.center),
@@ -229,31 +233,38 @@ class _QuizScreenState extends State<QuizScreen> {
                                   GridView.builder(
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
-                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 2,
                                       crossAxisSpacing: 10,
                                       mainAxisSpacing: 10,
-                                      childAspectRatio: 5, // Adjusted aspect ratio
+                                      childAspectRatio:
+                                          5, // Adjusted aspect ratio
                                     ),
                                     itemCount: question.options.length,
                                     itemBuilder: (context, optionIndex) {
-                                      final option = question.options[optionIndex];
+                                      final option =
+                                          question.options[optionIndex];
                                       return GestureDetector(
-                                        onTap: () => _checkAnswer(option, question.correctAnswer),
+                                        onTap: () => _checkAnswer(
+                                            option, question.correctAnswer),
                                         child: Container(
                                           padding: const EdgeInsets.all(10),
                                           decoration: BoxDecoration(
                                             color: _answered
-                                                ? (option == question.correctAnswer
+                                                ? (option ==
+                                                        question.correctAnswer
                                                     ? Colors.green
                                                     : (option == _selectedAnswer
                                                         ? Colors.red
                                                         : Colors.grey[300]))
                                                 : Colors.blue[100],
-                                            borderRadius: BorderRadius.circular(10),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.black.withOpacity(0.2),
+                                                color: Colors.black
+                                                    .withOpacity(0.2),
                                                 blurRadius: 5,
                                                 spreadRadius: 2,
                                               ),
@@ -262,7 +273,9 @@ class _QuizScreenState extends State<QuizScreen> {
                                           child: Center(
                                             child: Text(
                                               option,
-                                              style: const TextStyle(fontSize: 14), // Adjusted font size
+                                              style: const TextStyle(
+                                                  fontSize:
+                                                      14), // Adjusted font size
                                               textAlign: TextAlign.center,
                                             ),
                                           ),
