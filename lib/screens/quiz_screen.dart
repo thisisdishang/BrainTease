@@ -226,62 +226,58 @@ class _QuizScreenState extends State<QuizScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(question.question,
-                                      style: const TextStyle(fontSize: 18),
-                                      textAlign: TextAlign.center),
+                                  Text(
+                                    question.question,
+                                    style: const TextStyle(fontSize: 18),
+                                    textAlign: TextAlign.center,
+                                  ),
                                   const SizedBox(height: 20),
-                                  GridView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      crossAxisSpacing: 10,
-                                      mainAxisSpacing: 10,
-                                      childAspectRatio:
-                                          5, // Adjusted aspect ratio
-                                    ),
-                                    itemCount: question.options.length,
-                                    itemBuilder: (context, optionIndex) {
-                                      final option =
-                                          question.options[optionIndex];
-                                      return GestureDetector(
-                                        onTap: () => _checkAnswer(
-                                            option, question.correctAnswer),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: _answered
-                                                ? (option ==
-                                                        question.correctAnswer
-                                                    ? Colors.green
-                                                    : (option == _selectedAnswer
-                                                        ? Colors.red
-                                                        : Colors.grey[300]))
-                                                : Colors.blue[100],
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black
-                                                    .withOpacity(0.2),
-                                                blurRadius: 5,
-                                                spreadRadius: 2,
+                                  Expanded(
+                                    child: GridView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 10,
+                                        mainAxisSpacing: 10,
+                                        childAspectRatio: 4, // Reduced aspect ratio
+                                      ),
+                                      itemCount: question.options.length,
+                                      itemBuilder: (context, optionIndex) {
+                                        final option =
+                                            question.options[optionIndex];
+                                        return GestureDetector(
+                                          onTap: () => _checkAnswer(
+                                              option, question.correctAnswer),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              color: _answered
+                                                  ? (option ==
+                                                          question
+                                                              .correctAnswer
+                                                      ? Colors.green
+                                                      : (option ==
+                                                              _selectedAnswer
+                                                          ? Colors.red
+                                                          : Colors.grey[300]))
+                                                  : Colors.blue[100],
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                option,
+                                                style: const TextStyle(
+                                                    fontSize: 14),
+                                                textAlign: TextAlign.center,
                                               ),
-                                            ],
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              option,
-                                              style: const TextStyle(
-                                                  fontSize:
-                                                      14), // Adjusted font size
-                                              textAlign: TextAlign.center,
                                             ),
                                           ),
-                                        ),
-                                      );
-                                    },
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ],
                               ),

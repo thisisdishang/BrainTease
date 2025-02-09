@@ -44,7 +44,7 @@ class ResultScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
                     child: ListTile(
-                      title: Text("Q: ${question['question']}"),
+                      title: Text("Q${index+1}: ${question['question']}"),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

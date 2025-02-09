@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/quiz_history_provider.dart';
 import '../models/quiz_history_model.dart';
+import 'quiz_details_screen.dart';
 
 class HistoryScreen extends StatelessWidget {
   final bool showBackButton;
@@ -58,60 +59,19 @@ class HistoryScreen extends StatelessWidget {
                         "$categoryName - ${quiz.difficulty[0].toUpperCase() + quiz.difficulty.substring(1)}"),
                     subtitle:
                         Text("Score: ${quiz.score}/${quiz.totalQuestions}"),
-                    onTap: () => _showQuizDetails(context, quiz, categoryName),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => QuizDetailsScreen(
+                          quiz: quiz,
+                          categoryName: categoryName,
+                        ),
+                      ),
+                    ),
                   ),
                 );
               },
             ),
-    );
-  }
-
-  void _showQuizDetails(
-      BuildContext context, QuizHistoryModel quiz, String categoryName) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Quiz Details - $categoryName"),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: quiz.questions.map<Widget>((q) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: ListTile(
-                      title: Text(
-                        "Q: ${q['question']}",
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Your Answer: ${q['selectedAnswer']}",
-                              style: TextStyle(
-                                  color:
-                                      q['selectedAnswer'] == q['correctAnswer']
-                                          ? Colors.green
-                                          : Colors.red)),
-                          Text("Correct Answer: ${q['correctAnswer']}"),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Close"),
-            ),
-          ],
-        );
-      },
     );
   }
 }
