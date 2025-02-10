@@ -31,7 +31,7 @@ class QuizHistoryProvider with ChangeNotifier {
       // Append new results to existing history
       _history[existingHistoryIndex].questions.addAll(quizHistory.questions);
       _history[existingHistoryIndex].score += quizHistory.score;
-      _history[existingHistoryIndex].totalQuestions += quizHistory.questions.length; // Corrected setter
+      _history[existingHistoryIndex].totalQuestions += quizHistory.questions.length;
     } else {
       // Add new history entry
       _history.add(quizHistory);

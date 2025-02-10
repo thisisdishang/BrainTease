@@ -57,8 +57,7 @@ class HistoryScreen extends StatelessWidget {
                   child: ListTile(
                     title: Text(
                         "$categoryName - ${quiz.difficulty[0].toUpperCase() + quiz.difficulty.substring(1)}"),
-                    subtitle:
-                        Text("Score: ${quiz.score}/${quiz.totalQuestions}"),
+                    subtitle: Text("Score: ${quiz.score}/${quiz.totalQuestions}"),
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
