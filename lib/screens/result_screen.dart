@@ -33,7 +33,7 @@ class ResultScreen extends StatelessWidget {
               "Your Score: $score/$totalQuestions",
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
@@ -43,6 +43,7 @@ class ResultScreen extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
+                    elevation: 5,
                     child: ListTile(
                       title: Text("Q${index+1}: ${question['question']}"),
                       subtitle: Column(

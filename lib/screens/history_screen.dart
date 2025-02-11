@@ -53,6 +53,7 @@ class HistoryScreen extends StatelessWidget {
                         "Unknown Category";
 
                 return Card(
+                  elevation: 5,
                   margin: const EdgeInsets.all(10),
                   child: ListTile(
                     title: Text(
