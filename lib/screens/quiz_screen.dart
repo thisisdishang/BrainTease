@@ -183,7 +183,7 @@ class _QuizScreenState extends State<QuizScreen> {
             style: TextStyle(color: Colors.white),
           ),
         ),
-        body: Column(
+        body: Column(          
           children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -199,7 +199,7 @@ class _QuizScreenState extends State<QuizScreen> {
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 145,
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
