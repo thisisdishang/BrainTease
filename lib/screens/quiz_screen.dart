@@ -183,7 +183,7 @@ class _QuizScreenState extends State<QuizScreen> {
             style: TextStyle(color: Colors.white),
           ),
         ),
-        body: Column(          
+        body: Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -199,7 +199,7 @@ class _QuizScreenState extends State<QuizScreen> {
               ),
             ),
             SizedBox(
-              height: 145,
+              height: (MediaQuery.of(context).size.height) / 4,
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -221,65 +221,68 @@ class _QuizScreenState extends State<QuizScreen> {
                           itemBuilder: (context, index) {
                             QuestionModel question = _quizQuestions[index];
 
-                            return Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    question.question,
-                                    style: const TextStyle(fontSize: 18),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Expanded(
-                                    child: GridView.builder(
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 10,
-                                        mainAxisSpacing: 10,
-                                        childAspectRatio: 4, // Reduced aspect ratio
-                                      ),
-                                      itemCount: question.options.length,
-                                      itemBuilder: (context, optionIndex) {
-                                        final option =
-                                            question.options[optionIndex];
-                                        return GestureDetector(
-                                          onTap: () => _checkAnswer(
-                                              option, question.correctAnswer),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                              color: _answered
-                                                  ? (option ==
-                                                          question
-                                                              .correctAnswer
-                                                      ? Colors.green
-                                                      : (option ==
-                                                              _selectedAnswer
-                                                          ? Colors.red
-                                                          : Colors.grey[300]))
-                                                  : Colors.blue[100],
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                option,
-                                                style: const TextStyle(
-                                                    fontSize: 14),
-                                                textAlign: TextAlign.center,
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      question.question,
+                                      style: const TextStyle(fontSize: 18),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Expanded(
+                                      child: GridView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing: 10,
+                                          mainAxisSpacing: 10,
+                                          childAspectRatio:
+                                              4, // Reduced aspect ratio
+                                        ),
+                                        itemCount: question.options.length,
+                                        itemBuilder: (context, optionIndex) {
+                                          final option =
+                                              question.options[optionIndex];
+                                          return GestureDetector(
+                                            onTap: () => _checkAnswer(
+                                                option, question.correctAnswer),
+                                            child: Container(
+                                              padding: const EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                color: _answered
+                                                    ? (option ==
+                                                            question
+                                                                .correctAnswer
+                                                        ? Colors.green
+                                                        : (option ==
+                                                                _selectedAnswer
+                                                            ? Colors.red
+                                                            : Colors.grey[300]))
+                                                    : Colors.blue[100],
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  option,
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                  textAlign: TextAlign.center,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        );
-                                      },
+                                          );
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             );
                           },
