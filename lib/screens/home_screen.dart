@@ -149,19 +149,17 @@ class HomeScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(categories[index]["image"]!),
-                    fit: BoxFit.fitWidth,
+                    fit: BoxFit.cover,
                   ),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    bottomLeft: Radius.circular(10),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(9),
                   ),
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.4),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
+                    color: Colors.black.withOpacity(0.3),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8)
                     ),
                   ),
                   child: Center(

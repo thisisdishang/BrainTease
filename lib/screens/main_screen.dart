@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
         return AlertDialog(
           title: const Text('Exit App'),
           content: const Text(
-            'Are you sure you want to exit the app?',
+            'Are you sure to exit the app?',
           ),
           actions: <Widget>[
             TextButton(

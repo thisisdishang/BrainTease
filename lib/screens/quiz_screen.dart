@@ -132,7 +132,7 @@ class _QuizScreenState extends State<QuizScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Are you sure?'),
+          title: const Text('Quit Quiz'),
           content: const Text(
             'Are you sure you don\'t want to play this quiz?',
           ),
@@ -150,7 +150,7 @@ class _QuizScreenState extends State<QuizScreen> {
               style: TextButton.styleFrom(
                 textStyle: Theme.of(context).textTheme.labelLarge,
               ),
-              child: const Text('Ok'),
+              child: const Text('Accept'),
               onPressed: () {
                 Navigator.pop(context);
                 Navigator.pop(context);
