@@ -242,8 +242,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                           crossAxisCount: 2,
                                           crossAxisSpacing: 10,
                                           mainAxisSpacing: 10,
-                                          childAspectRatio:
-                                              4, // Reduced aspect ratio
+                                          childAspectRatio: 3, // Adjusted aspect ratio
                                         ),
                                         itemCount: question.options.length,
                                         itemBuilder: (context, optionIndex) {
