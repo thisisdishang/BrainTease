@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,7 +52,11 @@ class _MainScreenState extends State<MainScreen> {
               ),
               child: const Text('Yes'),
               onPressed: () {
-                SystemNavigator.pop();
+                if (Platform.isAndroid) {
+                  SystemNavigator.pop();
+                } else if (Platform.isIOS) {
+                  exit(0);
+                }
               },
             ),
           ],
